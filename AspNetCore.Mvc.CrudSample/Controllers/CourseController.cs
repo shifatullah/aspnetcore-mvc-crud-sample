@@ -29,13 +29,13 @@ namespace AspNetCore.Mvc.CrudSample.Controllers
 
         public IActionResult Save(NewCourseViewModel model)
         {
-            Course course =
-                _context.Courses.Where(x => x.Id == model.Id).FirstOrDefault();
+            Course course = null;
+            if (model.Id != 0)
+                course = _context.Courses.Where(x => x.Id == model.Id).FirstOrDefault();
 
             if (course == null)
             {
                 course = new Course();
-                course.Id = model.Id;
                 course.Name = model.Name;
 
                 _context.Courses.Add(course);

@@ -6,7 +6,8 @@
 <h1>Course</h1>
 
 <form asp-controller="Course" asp-action="Save" method="post">
-    Id: <input asp-for="Id" value="@Model.Id" />
-    Name: <input asp-for="Name" value="@Model.Name"/>
+    <input type="hidden" asp-for="Id" value="@Model.Id" />
+    Id: @Model.Id
+    Name: <input asp-for="Name" value="@Model.Name" />
     <button type="submit">Save</button>
 </form>
