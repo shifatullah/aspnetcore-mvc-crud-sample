@@ -18,6 +18,8 @@ namespace AspNetCore.Mvc.CrudSample.Models
 
         public string CourseId { get; set; }
 
+        public Course Course { get; set; }
+
         public List<Course> Courses { get; set; }
 
         public List<SelectListItem> CoursesListItem

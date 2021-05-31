@@ -18,13 +18,13 @@ namespace AspNetCore.Mvc.CrudSample.Migrations
                     table.PrimaryKey("PK_StudentCourse", x => new { x.StudentId, x.CourseId });
                     table.ForeignKey(
                         name: "FK_StudentCourse_Course_StudentId",
-                        column: x => x.StudentId,
+                        column: x => x.CourseId,
                         principalTable: "Course",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_StudentCourse_Student_CourseId",
-                        column: x => x.CourseId,
+                        column: x => x.StudentId,
                         principalTable: "Student",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);

@@ -3,6 +3,7 @@ using System.Linq;
 using AspNetCore.Mvc.CrudSample.Entities;
 using AspNetCore.Mvc.CrudSample.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace AspNetCore.Mvc.CrudSample.Controllers
 {
@@ -71,11 +72,12 @@ namespace AspNetCore.Mvc.CrudSample.Controllers
         public ViewResult Details(int id)
         {
             Teacher teacher =
-                _context.Teachers.Where(x => x.Id == id).FirstOrDefault();
+                _context.Teachers.Include(t => t.Course).Where(x => x.Id == id).FirstOrDefault();
 
             TeacherViewModel teacherViewModel = new TeacherViewModel();
             teacherViewModel.Id = teacher.Id;
             teacherViewModel.Name = teacher.Name;
+            teacherViewModel.Course = teacher.Course;
 
             return View(teacherViewModel);
         }

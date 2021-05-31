@@ -3,6 +3,7 @@ using System.Linq;
 using AspNetCore.Mvc.CrudSample.Entities;
 using AspNetCore.Mvc.CrudSample.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace AspNetCore.Mvc.CrudSample.Controllers
 {
@@ -24,25 +25,49 @@ namespace AspNetCore.Mvc.CrudSample.Controllers
 
         public ViewResult New()
         {
-            return View();
+            StudentViewModel studentViewModel = new StudentViewModel();
+            studentViewModel.Courses = _context.Courses.ToList();
+            return View(studentViewModel);
         }
 
-        public IActionResult Save(NewStudentViewModel model)
+        public IActionResult Save(StudentViewModel model)
         {
             Student student = null;
             if (model.Id != 0)
-                student = _context.Students.Where(x => x.Id == model.Id).FirstOrDefault();
+                student = _context.Students.Include(s => s.StudentCourses).Where(x => x.Id == model.Id).FirstOrDefault();
 
             if (student == null)
             {
                 student = new Student();
                 student.Name = model.Name;
 
+                if (model.CourseIds.Count > 0)
+                {
+                    student.StudentCourses = model.CourseIds.Select(c =>
+                            new StudentCourse
+                            {
+                                Student = student,
+                                Course = _context.Courses.Find(c)
+                            }
+                        ).ToList();
+                }
+
                 _context.Students.Add(student);
             }
             else
             {
                 student.Name = model.Name;
+
+                if (model.CourseIds.Count > 0)
+                {
+                    student.StudentCourses = model.CourseIds.Select(c =>
+                            new StudentCourse
+                            {
+                                Student = student,
+                                Course = _context.Courses.Find(c)
+                            }
+                        ).ToList();
+                }
             }
 
             _context.SaveChanges();
@@ -53,11 +78,14 @@ namespace AspNetCore.Mvc.CrudSample.Controllers
         public ViewResult Edit(int id)
         {
             Student student =
-                _context.Students.Where(x => x.Id == id).FirstOrDefault();
+                _context.Students.Include(s => s.StudentCourses).Where(s => s.Id == id).FirstOrDefault();
 
             StudentViewModel studentViewModel = new StudentViewModel();
             studentViewModel.Id = student.Id;
             studentViewModel.Name = student.Name;
+            if (student.StudentCourses != null)
+                studentViewModel.CourseIds = student.StudentCourses.Select(sc => sc.CourseId).ToList();
+            studentViewModel.Courses = _context.Courses.ToList();
 
             return View(studentViewModel);
         }
@@ -65,11 +93,14 @@ namespace AspNetCore.Mvc.CrudSample.Controllers
         public ViewResult Details(int id)
         {
             Student student =
-                _context.Students.Where(x => x.Id == id).FirstOrDefault();
+                _context.Students.Include(s => s.StudentCourses).Where(x => x.Id == id).FirstOrDefault();
 
             StudentViewModel studentViewModel = new StudentViewModel();
             studentViewModel.Id = student.Id;
             studentViewModel.Name = student.Name;
+            if (student.StudentCourses != null)
+                studentViewModel.CourseIds = student.StudentCourses.Select(sc => sc.CourseId).ToList();
+            studentViewModel.Courses = _context.Courses.ToList();
 
             return View(studentViewModel);
         }

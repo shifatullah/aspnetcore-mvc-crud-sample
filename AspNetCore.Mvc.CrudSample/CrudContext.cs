@@ -21,11 +21,11 @@ namespace AspNetCore.Mvc.CrudSample
             modelBuilder.Entity<StudentCourse>()
                 .HasOne(sc => sc.Student)
                 .WithMany(s => s.StudentCourses)
-                .HasForeignKey(sc => sc.CourseId);
+                .HasForeignKey(sc => sc.StudentId);
             modelBuilder.Entity<StudentCourse>()
                 .HasOne(sc => sc.Course)
                 .WithMany(c => c.StudentCourses)
-                .HasForeignKey(sc => sc.StudentId);
+                .HasForeignKey(sc => sc.CourseId);
         }
 
         public DbSet<Student> Students { get; set; }

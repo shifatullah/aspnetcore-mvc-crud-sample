@@ -7,3 +7,10 @@
 
 Id: @Model.Id
 Name: @Model.Name
+
+<ul>
+    @foreach (var course in Model.Courses.Where(c => Model.CourseIds.Contains(c.Id)))
+    {
+        <li>@course.Name</li>
+    }
+</ul>
