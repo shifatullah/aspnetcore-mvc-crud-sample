@@ -1,0 +1,12 @@
+﻿@{
+}
+
+@model StudentViewModel;
+
+<h1>Student</h1>
+
+<form asp-controller="Student" asp-action="Save" method="post">
+    Id: <input asp-for="Id" value="@Model.Id" />
+    Name: <input asp-for="Name" value="@Model.Name"/>
+    <button type="submit">Save</button>
+</form>

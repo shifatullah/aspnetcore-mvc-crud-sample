@@ -1,0 +1,39 @@
+﻿@using AspNetCore.Mvc.CrudSample.Entities
+@model StudentListViewModel
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <form asp-controller="Student" asp-action="New" method="post">
+                <button type="submit" class="btn btn-primary">New Student</button>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            Id
+        </div>
+        <div class="col-md-4">
+            Name
+        </div>
+        <div class="col-md-4">
+            Actions
+        </div>
+    </div>
+
+    @foreach(Student student in Model.Students) {
+    <div class="row">
+        <div class="col-md-4">
+            @student.Id
+        </div>
+        <div class="col-md-4">
+            @student.Name
+        </div>
+        <div class="col-md-4">
+            <a asp-action="Edit" asp-route-id="@student.Id">Edit</a> |
+            <a asp-action="Details" asp-route-id="@student.Id">Details</a> |
+            <a asp-action="Delete" asp-route-id="@student.Id">Delete</a>
+        </div>
+    </div>
+    }
+</div>
