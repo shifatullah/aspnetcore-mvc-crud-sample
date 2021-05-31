@@ -24,10 +24,12 @@ namespace AspNetCore.Mvc.CrudSample.Controllers
 
         public ViewResult New()
         {
-            return View();
+            TeacherViewModel teacherViewModel = new TeacherViewModel();
+            teacherViewModel.Courses = _context.Courses.ToList();
+            return View(teacherViewModel);
         }
 
-        public IActionResult Save(NewTeacherViewModel model)
+        public IActionResult Save(TeacherViewModel model)
         {
             Teacher teacher = null;
             if (model.Id != 0)
@@ -37,12 +39,13 @@ namespace AspNetCore.Mvc.CrudSample.Controllers
             {
                 teacher = new Teacher();
                 teacher.Name = model.Name;
-
+                teacher.Course = _context.Courses.Find(Convert.ToInt32(model.CourseId));
                 _context.Teachers.Add(teacher);
             }
             else
             {
                 teacher.Name = model.Name;
+                teacher.Course = _context.Courses.Find(Convert.ToInt32(model.CourseId));
             }
 
             _context.SaveChanges();
@@ -56,8 +59,11 @@ namespace AspNetCore.Mvc.CrudSample.Controllers
                 _context.Teachers.Where(x => x.Id == id).FirstOrDefault();
 
             TeacherViewModel teacherViewModel = new TeacherViewModel();
+            teacherViewModel.Courses = _context.Courses.ToList();
             teacherViewModel.Id = teacher.Id;
             teacherViewModel.Name = teacher.Name;
+            if (teacher.Course != null)
+                teacherViewModel.CourseId = teacher.Course.Id.ToString();
 
             return View(teacherViewModel);
         }

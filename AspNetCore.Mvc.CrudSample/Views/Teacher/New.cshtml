@@ -1,11 +1,15 @@
 ﻿@{
 }
 
-@model NewTeacherViewModel;
+@model TeacherViewModel
 
 <h1>New Teacher</h1>
 
 <form asp-controller="Teacher" asp-action="Save" method="post">
     Name: <input asp-for="Name" />
+    Course:
+    <select asp-for="CourseId" asp-items="Model.CoursesListItem" >
+        <option value="">Select Course</option>
+    </select>
     <button type="submit">Save</button>
 </form>

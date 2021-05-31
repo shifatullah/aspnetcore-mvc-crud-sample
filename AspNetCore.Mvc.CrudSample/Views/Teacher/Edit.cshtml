@@ -9,5 +9,9 @@
     <input type="hidden" asp-for="Id" value="@Model.Id" />
     Id: @Model.Id
     Name: <input asp-for="Name" value="@Model.Name" />
+    Course:
+    <select asp-for="CourseId" asp-items="Model.CoursesListItem">
+        <option value="">Select Course</option>
+    </select>
     <button type="submit">Save</button>
 </form>
