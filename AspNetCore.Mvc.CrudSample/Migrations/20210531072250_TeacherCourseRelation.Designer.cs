@@ -3,14 +3,16 @@ using System;
 using AspNetCore.Mvc.CrudSample;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace AspNetCore.Mvc.CrudSample.Migrations
 {
     [DbContext(typeof(CrudContext))]
-    partial class CrudContextModelSnapshot : ModelSnapshot
+    [Migration("20210531072250_TeacherCourseRelation")]
+    partial class TeacherCourseRelation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
