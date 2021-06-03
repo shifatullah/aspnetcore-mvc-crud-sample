@@ -17,37 +17,46 @@ namespace AspNetCore.Mvc.CrudSample.Controllers
 
         public ViewResult Index()
         {
-            CourseListViewModel model = new CourseListViewModel();
-            model.Courses = _context.Courses.ToList();
-            return View(model);
+            CourseListViewModel courseViewModel = new CourseListViewModel();
+            courseViewModel.Courses = _context.Courses.ToList();
+            return View(courseViewModel);
         }
 
         public ViewResult New()
         {
-            return View();
+            CourseViewModel courseViewModel = new CourseViewModel();
+            return View("Edit", courseViewModel);
         }
 
-        public IActionResult Save(NewCourseViewModel model)
+        [HttpPost]
+        public IActionResult Edit(CourseViewModel model)
         {
-            Course course = null;
-            if (model.Id != 0)
-                course = _context.Courses.Where(x => x.Id == model.Id).FirstOrDefault();
-
-            if (course == null)
+            if (ModelState.IsValid)
             {
-                course = new Course();
-                course.Name = model.Name;
+                Course course = null;
+                if (model.Id != 0)
+                    course = _context.Courses.Where(x => x.Id == model.Id).FirstOrDefault();
 
-                _context.Courses.Add(course);
+                if (course == null)
+                {
+                    course = new Course();
+                    course.Name = model.Name;
+
+                    _context.Courses.Add(course);
+                }
+                else
+                {
+                    course.Name = model.Name;
+                }
+
+                _context.SaveChanges();
+
+                return RedirectToAction("Index");
             }
             else
             {
-                course.Name = model.Name;
+                    return BadRequest();
             }
-
-            _context.SaveChanges();
-
-            return RedirectToAction("Index");
         }
 
         public ViewResult Edit(int id)

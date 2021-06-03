@@ -27,31 +27,40 @@ namespace AspNetCore.Mvc.CrudSample.Controllers
         {
             TeacherViewModel teacherViewModel = new TeacherViewModel();
             teacherViewModel.Courses = _context.Courses.ToList();
-            return View(teacherViewModel);
+            return View("Edit", teacherViewModel);
         }
 
-        public IActionResult Save(TeacherViewModel model)
+        [HttpPost]
+        public IActionResult Edit(TeacherViewModel model)
         {
-            Teacher teacher = null;
-            if (model.Id != 0)
-                teacher = _context.Teachers.Find(model.Id);
-
-            if (teacher == null)
+            if (ModelState.IsValid)
             {
-                teacher = new Teacher();
-                teacher.Name = model.Name;
-                teacher.Course = _context.Courses.Find(Convert.ToInt32(model.CourseId));
-                _context.Teachers.Add(teacher);
+                Teacher teacher = null;
+                if (model.Id != 0)
+                    teacher = _context.Teachers.Find(model.Id);
+
+                if (teacher == null)
+                {
+                    teacher = new Teacher();
+                    teacher.Name = model.Name;
+                    teacher.Course = _context.Courses.Find(model.Course);
+                    _context.Teachers.Add(teacher);
+                }
+                else
+                {
+                    teacher.Name = model.Name;
+                    teacher.Course = _context.Courses.Find(model.Course);
+                }
+
+                _context.SaveChanges();
+
+                return RedirectToAction("Index");
             }
             else
             {
-                teacher.Name = model.Name;
-                teacher.Course = _context.Courses.Find(Convert.ToInt32(model.CourseId));
+                model.Courses = _context.Courses.ToList();
+                return View(model);
             }
-
-            _context.SaveChanges();
-
-            return RedirectToAction("Index");
         }
 
         public ViewResult Edit(int id)
@@ -64,7 +73,7 @@ namespace AspNetCore.Mvc.CrudSample.Controllers
             teacherViewModel.Id = teacher.Id;
             teacherViewModel.Name = teacher.Name;
             if (teacher.Course != null)
-                teacherViewModel.CourseId = teacher.Course.Id.ToString();
+                teacherViewModel.Course = teacher.Course.Id;
 
             return View(teacherViewModel);
         }
@@ -77,7 +86,7 @@ namespace AspNetCore.Mvc.CrudSample.Controllers
             TeacherViewModel teacherViewModel = new TeacherViewModel();
             teacherViewModel.Id = teacher.Id;
             teacherViewModel.Name = teacher.Name;
-            teacherViewModel.Course = teacher.Course;
+            teacherViewModel.CourseDetail = teacher.Course;
 
             return View(teacherViewModel);
         }

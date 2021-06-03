@@ -4,36 +4,31 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-12">
-            <form asp-controller="Teacher" asp-action="New" method="post">
-                <button type="submit" class="btn btn-primary">New Teacher</button>
-            </form>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-4">
-            Id
-        </div>
-        <div class="col-md-4">
-            Name
-        </div>
-        <div class="col-md-4">
-            Actions
+            <a class="btn btn-primary" role="button" asp-controller="Teacher" asp-action="New">New Teacher</a>
         </div>
     </div>
 
-    @foreach(Teacher teacher in Model.Teachers) {
-    <div class="row">
-        <div class="col-md-4">
-            @teacher.Id
-        </div>
-        <div class="col-md-4">
-            @teacher.Name
-        </div>
-        <div class="col-md-4">
-            <a asp-action="Edit" asp-route-id="@teacher.Id">Edit</a> |
-            <a asp-action="Details" asp-route-id="@teacher.Id">Details</a> |
-            <a asp-action="Delete" asp-route-id="@teacher.Id">Delete</a>
-        </div>
-    </div>
-    }
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th style="width: 25%" scope="col">Id</th>
+                <th style="width: 50%" scope="col">Name</th>
+                <th style="width: 25%" scope="col">Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (Teacher teacher in Model.Teachers)
+            {
+                <tr>
+                    <td scope="row">@teacher.Id</td>
+                    <td>@teacher.Name</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@teacher.Id">Edit</a> |
+                        <a asp-action="Delete" asp-route-id="@teacher.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 </div>

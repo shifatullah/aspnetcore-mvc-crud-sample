@@ -27,52 +27,62 @@ namespace AspNetCore.Mvc.CrudSample.Controllers
         {
             StudentViewModel studentViewModel = new StudentViewModel();
             studentViewModel.Courses = _context.Courses.ToList();
-            return View(studentViewModel);
+            return View("Edit", studentViewModel);
         }
 
-        public IActionResult Save(StudentViewModel model)
+        [HttpPost]
+        public IActionResult Edit(StudentViewModel model)
         {
-            Student student = null;
-            if (model.Id != 0)
-                student = _context.Students.Include(s => s.StudentCourses).Where(x => x.Id == model.Id).FirstOrDefault();
-
-            if (student == null)
+            if (ModelState.IsValid)
             {
-                student = new Student();
-                student.Name = model.Name;
+                Student student = null;
+                if (model.Id != 0)
+                    student = _context.Students.Include(s => s.StudentCourses).Where(x => x.Id == model.Id).FirstOrDefault();
 
-                if (model.CourseIds.Count > 0)
+                if (student == null)
                 {
-                    student.StudentCourses = model.CourseIds.Select(c =>
-                            new StudentCourse
-                            {
-                                Student = student,
-                                Course = _context.Courses.Find(c)
-                            }
-                        ).ToList();
+                    student = new Student();
+                    student.Name = model.Name;
+
+                    if (model.CourseIds != null && model.CourseIds.Count > 0)
+                    {
+                        model.CourseIds.Remove(0);
+                        student.StudentCourses = model.CourseIds.Select(c =>
+                                new StudentCourse
+                                {
+                                    Student = student,
+                                    Course = _context.Courses.Find(c)
+                                }
+                            ).ToList();
+                    }
+
+                    _context.Students.Add(student);
+                }
+                else
+                {
+                    student.Name = model.Name;
+
+                    if (model.CourseIds != null && model.CourseIds.Count > 0)
+                    {
+                        model.CourseIds.Remove(0);
+                        student.StudentCourses = model.CourseIds.Select(c =>
+                                new StudentCourse
+                                {
+                                    Student = student,
+                                    Course = _context.Courses.Find(c)
+                                }
+                            ).ToList();
+                    }
                 }
 
-                _context.Students.Add(student);
+                _context.SaveChanges();
+
+                return RedirectToAction("Index");
             }
             else
             {
-                student.Name = model.Name;
-
-                if (model.CourseIds.Count > 0)
-                {
-                    student.StudentCourses = model.CourseIds.Select(c =>
-                            new StudentCourse
-                            {
-                                Student = student,
-                                Course = _context.Courses.Find(c)
-                            }
-                        ).ToList();
-                }
+                return BadRequest();
             }
-
-            _context.SaveChanges();
-
-            return RedirectToAction("Index");
         }
 
         public ViewResult Edit(int id)
